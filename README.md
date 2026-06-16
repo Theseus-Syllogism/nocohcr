@@ -4,41 +4,31 @@ A self-hosted PWA built for communities that need a secure digital home. It comb
 
 The server operator cannot read your vault files or inbox. Encryption happens in the browser before anything leaves your device.
 
-![Login](screenshots/01-login-filled.png)
-
 ---
 
 ## Features
 
 ### Dashboard
 
-After logging in you land on the dashboard, which gives you quick access to your vault, inbox, messages, and community tools.
+After logging in you land on the dashboard with quick access to everything.
 
-![Dashboard](screenshots/02-dashboard.png)
+![Dashboard](screenshots/dashboard.png)
 
 ---
 
 ### Encrypted Vault
 
-Files are encrypted in your browser using a key derived from your password. The server stores only ciphertext, keyed by the sha256 hash of the encrypted bytes. Nothing is readable server-side.
+Files are encrypted in your browser using a key derived from your password. The server stores only ciphertext keyed by the sha256 hash of the encrypted bytes. Nothing is readable server-side.
 
-![Vault](screenshots/03-vault.png)
+![Vault files](screenshots/vault-files.png)
 
 ---
 
 ### Encrypted Inbox
 
-Incoming email is sealed to your X25519 public key at the server before it is stored. Only your device holds the private key needed to read it.
+Incoming email is sealed to your X25519 public key at the server before storage. Only your device holds the private key needed to read it.
 
-![Inbox](screenshots/04-inbox.png)
-
----
-
-### Messaging
-
-Send encrypted messages to other users. The relay stores only opaque envelopes; it never sees plaintext.
-
-![Messages](screenshots/05-messages.png)
+![Inbox](screenshots/inbox.png)
 
 ---
 
@@ -46,7 +36,8 @@ Send encrypted messages to other users. The relay stores only opaque envelopes; 
 
 A local classifieds board that requires no account. Post resources, warnings, events, rides, free items, or anything else your community needs. When you create a post you get a one-time private key. Only someone with that key can edit, renew, or delete the post.
 
-![Board](screenshots/06-board.png)
+![Board](screenshots/board.png)
+![New post](screenshots/board-new.png)
 
 ---
 
@@ -54,7 +45,7 @@ A local classifieds board that requires no account. Post resources, warnings, ev
 
 Browse published community sites with live preview thumbnails generated on publish.
 
-![Explore](screenshots/07-explore.png)
+![Explore](screenshots/explore.png)
 
 ---
 
@@ -62,59 +53,51 @@ Browse published community sites with live preview thumbnails generated on publi
 
 Claim a handle and get a personal site at `<handle>.yourdomain.com`. The code editor lets you write HTML and CSS directly.
 
-![Site editor](screenshots/08-site-editor.png)
+![Site editor](screenshots/site-editor.png)
 
-The WYSIWYG builder lets you drag, drop, and arrange sections without writing code. JavaScript is stripped at publish and blocked by CSP, so published sites are static HTML/CSS only.
+The WYSIWYG studio lets you drag, drop, and arrange sections without writing code. JavaScript is stripped at publish and blocked by CSP, so published sites are static HTML/CSS only.
 
-![Studio builder](screenshots/09-studio.png)
+![Studio](screenshots/studio.png)
 
 ---
 
 ### Resume Builder
 
-Build a structured resume with a live preview. Publish it as a shareable link at `/r/your-name` or export it as a PDF with one click.
+Build a structured resume with a live preview. Publish it as a shareable link at `/r/your-name` or export it as a PDF.
 
-![Resume builder](screenshots/10-resume-builder.png)
-
----
-
-### Digital Library
-
-Search and stream content from the Internet Archive. Download videos and audio through the built-in downloader.
-
-![Library](screenshots/11-library.png)
+![Resume builder](screenshots/resume-builder.png)
 
 ---
 
 ### Digital Resources
 
-Access downloadable forms and local resource links without needing an account.
+Access downloadable forms and local resource links.
 
-![Digital resources](screenshots/12-digital-resources.png)
+![Digital resources](screenshots/digital-resources.png)
 
 ---
 
 ### Resources Directory
 
-A curated list of local resources and services.
+A curated list of local community resources and services.
 
-![Resources](screenshots/13-resources.png)
-
----
-
-### Scheduled Send
-
-Write an email now and schedule it to send later. Jobs are stored on disk and fire even if you close the app.
-
-![Schedule](screenshots/14-schedule.png)
+![Resources](screenshots/resources.png)
 
 ---
 
-### Settings
+### Forms Library
 
-Manage your account, handle, and preferences.
+Download common legal, benefits, and government forms directly from the app.
 
-![Settings](screenshots/15-settings.png)
+![Forms](screenshots/forms.png)
+
+---
+
+### Directions
+
+Get walking, cycling, and driving directions using a locally hosted routing engine. No data sent to Google or any third party.
+
+![Directions](screenshots/directions.png)
 
 ---
 
@@ -122,7 +105,29 @@ Manage your account, handle, and preferences.
 
 Quick access to emergency contacts and safety information.
 
-![Emergency](screenshots/16-emergency.png)
+![Emergency](screenshots/emergency.png)
+
+---
+
+### Know Your Rights
+
+A reference for legal rights and resources.
+
+![Rights](screenshots/rights.png)
+
+---
+
+### Settings
+
+Manage your account, handle, and preferences.
+
+![Settings](screenshots/settings.png)
+
+---
+
+### About
+
+![About](screenshots/about.png)
 
 ---
 
@@ -130,13 +135,17 @@ Quick access to emergency contacts and safety information.
 
 Blindvault installs as a PWA on any phone. The layout is designed for low-end devices on mobile data.
 
-| Dashboard | Vault | Inbox |
+| Dashboard | Inbox | Board |
 |---|---|---|
-| ![Mobile dashboard](screenshots/mobile-01-dashboard.png) | ![Mobile vault](screenshots/mobile-02-vault.png) | ![Mobile inbox](screenshots/mobile-03-inbox.png) |
+| ![Mobile dashboard](screenshots/mobile-dashboard.png) | ![Mobile inbox](screenshots/mobile-inbox.png) | ![Mobile board](screenshots/mobile-board.png) |
 
-| Board | Studio | Library |
+| Explore | Studio | Resume |
 |---|---|---|
-| ![Mobile board](screenshots/mobile-04-board.png) | ![Mobile studio](screenshots/mobile-05-studio.png) | ![Mobile library](screenshots/mobile-07-library.png) |
+| ![Mobile explore](screenshots/mobile-explore.png) | ![Mobile studio](screenshots/mobile-studio.png) | ![Mobile resume](screenshots/mobile-resume-builder.png) |
+
+| Resources | Directions | Emergency |
+|---|---|---|
+| ![Mobile resources](screenshots/mobile-resources.png) | ![Mobile directions](screenshots/mobile-directions.png) | ![Mobile emergency](screenshots/mobile-emergency.png) |
 
 ---
 
@@ -171,7 +180,7 @@ All backend services bind to `127.0.0.1` only. nginx is the sole public listener
 - **Vault files** are encrypted in the browser before upload. The server stores opaque ciphertext and cannot decrypt it.
 - **Inbox email** is sealed to your X25519 public key before storage. The server never holds plaintext messages.
 - **User sites** are sanitised server-side with DOMPurify and served with `script-src 'none'` CSP. JavaScript cannot run on published sites.
-- **Board posts** require no login. Ownership is a sha256-hashed one-time secret; all comparisons use timing-safe equality.
+- **Board posts** require no login. Ownership is a sha256-hashed one-time secret with timing-safe comparison on every request.
 - **nginx CSP** blocks all external scripts, enforces `frame-ancestors 'none'`, and runs Trusted Types in report-only mode.
 
 See [SECURITY.md](SECURITY.md) for the full model.
