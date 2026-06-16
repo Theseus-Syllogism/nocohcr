@@ -1,73 +1,142 @@
 # Blindvault
 
-A privacy-first Progressive Web App (PWA) for communities that need a secure, self-hosted digital home — encrypted personal vault, anonymous community board, personal websites, resume builder, digital library, and more.
+A self-hosted PWA built for communities that need a secure digital home. It combines an end-to-end encrypted personal vault, encrypted email inbox, anonymous community board, personal website hosting, resume builder, and a digital library into a single installable app.
 
-Blindvault is designed so **the server operator cannot read your data**. Files are encrypted in your browser before upload; the server stores and serves opaque ciphertext only.
+The server operator cannot read your vault files or inbox. Encryption happens in the browser before anything leaves your device.
 
-![Login screen](screenshots/login.png)
+![Login](screenshots/01-login-filled.png)
 
 ---
 
 ## Features
 
-### Encrypted Personal Vault
-Store files with client-side end-to-end encryption. Your master key is derived from your password in the browser and never transmitted to the server. The server holds only ciphertext blobs keyed by their sha256 hash.
+### Dashboard
 
-![Vault dashboard](screenshots/dashboard.png)
-![Vault unlocked](screenshots/vault-unlock.png)
+After logging in you land on the dashboard, which gives you quick access to your vault, inbox, messages, and community tools.
+
+![Dashboard](screenshots/02-dashboard.png)
+
+---
+
+### Encrypted Vault
+
+Files are encrypted in your browser using a key derived from your password. The server stores only ciphertext, keyed by the sha256 hash of the encrypted bytes. Nothing is readable server-side.
+
+![Vault](screenshots/03-vault.png)
 
 ---
 
 ### Encrypted Inbox
-Receive email into a sealed inbox. Incoming messages are encrypted to your public key at the server edge before storage — only your device can decrypt them.
 
-![Inbox](screenshots/inbox.png)
+Incoming email is sealed to your X25519 public key at the server before it is stored. Only your device holds the private key needed to read it.
+
+![Inbox](screenshots/04-inbox.png)
 
 ---
 
-### Personal Websites
-Claim a handle and publish a personal website at `<handle>.yourdomain.com`. The built-in WYSIWYG editor requires no coding knowledge. JavaScript is stripped at publish and blocked by CSP — sites are safe static HTML/CSS only.
+### Messaging
 
-![Site editor](screenshots/site-editor.png)
-![Site builder](screenshots/site-builder.png)
+Send encrypted messages to other users. The relay stores only opaque envelopes; it never sees plaintext.
+
+![Messages](screenshots/05-messages.png)
 
 ---
 
 ### Community Board
-An anonymous local classifieds board — no account required. Post resources, warnings, events, rides, free items, and more. Post ownership is a one-time private key returned at creation; only the holder can edit, renew, or delete their post.
 
-![Community board](screenshots/board.png)
+A local classifieds board that requires no account. Post resources, warnings, events, rides, free items, or anything else your community needs. When you create a post you get a one-time private key. Only someone with that key can edit, renew, or delete the post.
+
+![Board](screenshots/06-board.png)
 
 ---
 
-### Explore Directory
-Browse published community sites with live preview thumbnails.
+### Explore
 
-![Explore directory](screenshots/explore.png)
+Browse published community sites with live preview thumbnails generated on publish.
+
+![Explore](screenshots/07-explore.png)
+
+---
+
+### Personal Websites
+
+Claim a handle and get a personal site at `<handle>.yourdomain.com`. The code editor lets you write HTML and CSS directly.
+
+![Site editor](screenshots/08-site-editor.png)
+
+The WYSIWYG builder lets you drag, drop, and arrange sections without writing code. JavaScript is stripped at publish and blocked by CSP, so published sites are static HTML/CSS only.
+
+![Studio builder](screenshots/09-studio.png)
 
 ---
 
 ### Resume Builder
-Build a structured resume with a live preview, publish it as a shareable public link, or export it as a one-click PDF.
 
-![Resume builder](screenshots/resume-builder.png)
+Build a structured resume with a live preview. Publish it as a shareable link at `/r/your-name` or export it as a PDF with one click.
 
----
-
-### Resources & Digital Library
-A curated local resource directory, Internet Archive search and streaming, and a digital book/video downloader.
-
-![Resources](screenshots/resources.png)
-![Digital library](screenshots/library.png)
+![Resume builder](screenshots/10-resume-builder.png)
 
 ---
 
-### Mobile-First PWA
-Installable on any device. Designed for low-end phones on mobile data — no heavy framework, small bundle, offline-capable service worker.
+### Digital Library
 
-| Login | Board | Explore |
+Search and stream content from the Internet Archive. Download videos and audio through the built-in downloader.
+
+![Library](screenshots/11-library.png)
+
+---
+
+### Digital Resources
+
+Access downloadable forms and local resource links without needing an account.
+
+![Digital resources](screenshots/12-digital-resources.png)
+
+---
+
+### Resources Directory
+
+A curated list of local resources and services.
+
+![Resources](screenshots/13-resources.png)
+
+---
+
+### Scheduled Send
+
+Write an email now and schedule it to send later. Jobs are stored on disk and fire even if you close the app.
+
+![Schedule](screenshots/14-schedule.png)
+
+---
+
+### Settings
+
+Manage your account, handle, and preferences.
+
+![Settings](screenshots/15-settings.png)
+
+---
+
+### Emergency Info
+
+Quick access to emergency contacts and safety information.
+
+![Emergency](screenshots/16-emergency.png)
+
+---
+
+### Mobile
+
+Blindvault installs as a PWA on any phone. The layout is designed for low-end devices on mobile data.
+
+| Dashboard | Vault | Inbox |
 |---|---|---|
-| ![Mobile login](screenshots/mobile-login.png) | ![Mobile board](screenshots/mobile-board.png) | ![Mobile explore](screenshots/mobile-explore.png) |
+| ![Mobile dashboard](screenshots/mobile-01-dashboard.png) | ![Mobile vault](screenshots/mobile-02-vault.png) | ![Mobile inbox](screenshots/mobile-03-inbox.png) |
+
+| Board | Studio | Library |
+|---|---|---|
+| ![Mobile board](screenshots/mobile-04-board.png) | ![Mobile studio](screenshots/mobile-05-studio.png) | ![Mobile library](screenshots/mobile-07-library.png) |
 
 ---
 
@@ -75,45 +144,45 @@ Installable on any device. Designed for low-end phones on mobile data — no hea
 
 ```
 Browser / Mobile PWA
-        │  HTTPS
-        ▼
+        |  HTTPS
+        v
      nginx (edge)
-        │
-        ├── /var/www/blindvault/     Static frontend (SPA)
-        ├── /api/*        →  blindvault-api   :8088  (Rust/Axum + PostgreSQL)
-        ├── /api/sites/*  →  bv-sites         :8800  (Node.js)
-        ├── /api/board/*  →  bv-board         :8802  (Node.js)
-        ├── /api/resume/* →  bv-resume        :8805  (Node.js)
-        ├── /api/schedule →  bv-schedule      :8798  (Node.js)
-        ├── /api/v1/messaging/ → bv-messaging :8801  (Node.js)
-        ├── /api/download/ → bv-download-proxy :8082 (Python/yt-dlp)
-        ├── /api/books/*  →  bv-book-proxy    :8083  (Python)
-        ├── /api/route    →  bv-route-proxy   :8084  (Python/Valhalla)
-        ├── /site-thumbs/ →  /var/lib/bv-shots/thumbs/
-        └── /r/<slug>     →  /var/lib/bv-resume/shared/
+        |
+        +-- /var/www/blindvault/      Static frontend (SPA)
+        +-- /api/*         ->  blindvault-api    :8088  (Rust/Axum + PostgreSQL)
+        +-- /api/sites/*   ->  bv-sites          :8800  (Node.js)
+        +-- /api/board/*   ->  bv-board          :8802  (Node.js)
+        +-- /api/resume/*  ->  bv-resume         :8805  (Node.js)
+        +-- /api/schedule  ->  bv-schedule       :8798  (Node.js)
+        +-- /api/v1/messaging/ -> bv-messaging   :8801  (Node.js)
+        +-- /api/download/ ->  bv-download-proxy :8082  (Python/yt-dlp)
+        +-- /api/books/*   ->  bv-book-proxy     :8083  (Python)
+        +-- /api/route     ->  bv-route-proxy    :8084  (Python/Valhalla)
+        +-- /site-thumbs/  ->  /var/lib/bv-shots/thumbs/
+        +-- /r/<slug>      ->  /var/lib/bv-resume/shared/
 ```
 
-All backend services bind to `127.0.0.1` only. nginx is the sole public listener. See [ARCHITECTURE.md](ARCHITECTURE.md) for the full diagram and data flow.
+All backend services bind to `127.0.0.1` only. nginx is the sole public listener. See [ARCHITECTURE.md](ARCHITECTURE.md) for the full diagram.
 
 ---
 
-## Security Model
+## Security
 
-- **Client-side E2EE** — vault files are encrypted in the browser before upload. The server stores opaque ciphertext and cannot decrypt it without the user's password.
-- **User sites** — HTML is sanitised server-side (DOMPurify/jsdom) and served with `script-src 'none'` CSP. JavaScript cannot run on published sites.
-- **Anonymous board** — no login required. Post ownership is a `sha256`-hashed one-time secret; timing-safe comparison on every management request.
-- **Zero plaintext email storage** — incoming email is sealed to the recipient's X25519 public key before being stored.
-- **Strict nginx CSP** — the main app CSP blocks all external scripts, enforces `frame-ancestors 'none'`, and is in Trusted Types report-only mode.
+- **Vault files** are encrypted in the browser before upload. The server stores opaque ciphertext and cannot decrypt it.
+- **Inbox email** is sealed to your X25519 public key before storage. The server never holds plaintext messages.
+- **User sites** are sanitised server-side with DOMPurify and served with `script-src 'none'` CSP. JavaScript cannot run on published sites.
+- **Board posts** require no login. Ownership is a sha256-hashed one-time secret; all comparisons use timing-safe equality.
+- **nginx CSP** blocks all external scripts, enforces `frame-ancestors 'none'`, and runs Trusted Types in report-only mode.
 
-See [SECURITY.md](SECURITY.md) for the full security model.
+See [SECURITY.md](SECURITY.md) for the full model.
 
 ---
 
 ## Self-Hosting
 
-See [SELF-HOSTING.md](SELF-HOSTING.md) for the complete step-by-step guide.
+See [SELF-HOSTING.md](SELF-HOSTING.md) for the full guide.
 
-**Quick overview:**
+Quick steps:
 
 1. Install nginx (with `headers-more`), Node.js 20+, Python 3.11+, PostgreSQL 16
 2. Run `deploy/postgres/init.sql` to create the database role
@@ -122,27 +191,26 @@ See [SELF-HOSTING.md](SELF-HOSTING.md) for the complete step-by-step guide.
 5. Copy nginx configs from `deploy/nginx/` and update your domain name
 6. Deploy the frontend to your web root and run `node bv-build.mjs`
 
-**Optional services** (graceful degradation if absent):
-- `bv-shots` (Playwright/Chromium) — site thumbnails and PDF export
-- `bv-route-proxy` (Valhalla + Nominatim) — directions feature
-- `bv-download-proxy` (yt-dlp) — Digital Library video/audio download
-- `bv-book-proxy` (Kavita) — Digital Library book management
+Optional services that degrade gracefully if absent:
+
+- `bv-shots` (Playwright/Chromium) -- site thumbnails and PDF export
+- `bv-route-proxy` (Valhalla + Nominatim) -- directions
+- `bv-download-proxy` (yt-dlp) -- video and audio download
+- `bv-book-proxy` (Kavita) -- book management
 
 ---
 
 ## Building the Frontend
 
-The frontend is a vanilla JS SPA extended by `bv-build.mjs`. See [BUILD.md](BUILD.md) for full details.
-
 ```bash
-# Extend and hash the frontend bundle
 node bv-build.mjs
 
-# Output:
 # BUILDER_CHUNK=bv-builder-XXXXXXXX.js
 # NEW_MAIN=main-XXXXXXXX.js
 # TO DEPLOY: point index.html at main-XXXXXXXX.js and bump the SW version.
 ```
+
+See [BUILD.md](BUILD.md) for details.
 
 ---
 
@@ -150,31 +218,31 @@ node bv-build.mjs
 
 ```
 frontend/
-├── bv-build.mjs              Build script (patches + extends the base bundle)
-├── bv-builder.src.js         WYSIWYG site builder (#/studio)
-├── bv-resume.src.js          Resume builder (#/resume)
-├── bv-films.src.js           Films & TV section (#/library)
-├── bv-*-route.js             Route registration modules
-└── static/                   Static assets (HTML, CSS, icons, i18n, forms)
++-- bv-build.mjs              Build script
++-- bv-builder.src.js         WYSIWYG site builder (#/studio)
++-- bv-resume.src.js          Resume builder (#/resume)
++-- bv-films.src.js           Films & TV section (#/library)
++-- bv-*-route.js             Route registration modules
++-- static/                   HTML, CSS, icons, i18n, forms
 
 services/
-├── bv-blobstore/             Content-addressed E2EE blob store (Node.js)
-├── bv-board/                 Anonymous community board (Node.js)
-├── bv-sites/                 User personal websites (Node.js)
-├── bv-resume/                Resume builder backend (Node.js)
-├── bv-shots/                 Screenshot + PDF renderer (Node.js/Playwright)
-├── bv-schedule/              Scheduled email send (Node.js)
-├── bv-messaging/             E2EE app-to-app messaging relay (Node.js)
-├── bv-inbox-smtp/            Postfix → encrypted inbox bridge (Node.js)
-├── bv-route-proxy/           Directions proxy → Valhalla/Nominatim (Python)
-├── bv-download-proxy/        Video/audio download proxy → yt-dlp (Python)
-├── bv-book-proxy/            Book search/download proxy → Kavita (Python)
-└── bv-outbox-relay/          DKIM outbound SMTP relay (Python)
++-- bv-blobstore/             E2EE blob store (Node.js)
++-- bv-board/                 Anonymous community board (Node.js)
++-- bv-sites/                 User personal websites (Node.js)
++-- bv-resume/                Resume builder backend (Node.js)
++-- bv-shots/                 Screenshot and PDF renderer (Node.js/Playwright)
++-- bv-schedule/              Scheduled email send (Node.js)
++-- bv-messaging/             E2EE messaging relay (Node.js)
++-- bv-inbox-smtp/            Postfix to encrypted inbox bridge (Node.js)
++-- bv-route-proxy/           Directions proxy (Python/Valhalla)
++-- bv-download-proxy/        Video/audio download proxy (Python/yt-dlp)
++-- bv-book-proxy/            Book proxy (Python/Kavita)
++-- bv-outbox-relay/          DKIM outbound SMTP relay (Python)
 
 deploy/
-├── nginx/                    nginx vhost configs
-├── postgres/                 Database init SQL and pg_hba snippet
-└── systemd/                  systemd unit for blindvault-api
++-- nginx/                    nginx vhost configs
++-- postgres/                 Database init SQL and pg_hba snippet
++-- systemd/                  systemd unit for blindvault-api
 ```
 
 ---
@@ -183,4 +251,4 @@ deploy/
 
 [AGPL-3.0](LICENSE)
 
-Copyleft: anyone who runs a modified version as a network service must publish their changes under the same license.
+Anyone who runs a modified version as a network service must publish their source changes under the same license.
