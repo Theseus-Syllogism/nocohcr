@@ -1,0 +1,13 @@
+{
+  "name": "bv-sites",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "server.mjs",
+  "description": "BlindVault user sites (Neocities-style <handle>.yourdomain.com)",
+  "dependencies": {
+    "dompurify": "^3.1.7",
+    "fflate": "^0.8.2",
+    "jsdom": "^24.1.3"
+  }
+}

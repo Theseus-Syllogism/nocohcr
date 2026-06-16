@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+set -a; . /etc/blindvault/inbox.env; set +a
+exec /usr/bin/node /opt/blindvault/bv-inbox-smtp/bv-inbox-smtp.mjs "$@"

@@ -1,0 +1,6 @@
+# bv-outbox-relay runtime dependencies
+# Install into a venv: python3 -m venv venv && venv/bin/pip install -r requirements.txt
+
+aiohttp>=3.9.0
+dkimpy>=1.0.0
+dnspython>=2.4.0

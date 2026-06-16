@@ -1,0 +1,7 @@
+[
+  {"id":"minimal","name":"Minimal","description":"A clean, simple page to start from."},
+  {"id":"bio","name":"Link in bio","description":"A centered profile with a tidy list of links."},
+  {"id":"resume","name":"Résumé / CV","description":"A professional one-page résumé."},
+  {"id":"business","name":"Business / landing","description":"Hero, services, and a contact section."},
+  {"id":"resources","name":"Resource list","description":"A list of resources or links with descriptions."}
+]

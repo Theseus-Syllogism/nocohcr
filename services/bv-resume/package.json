@@ -1,0 +1,7 @@
+{
+  "name": "bv-resume",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": { "jsdom": "^24.0.0", "dompurify": "^3.0.0" }
+}

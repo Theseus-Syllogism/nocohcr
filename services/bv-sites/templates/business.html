@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Business</title>
+<style>
+:root{color-scheme:light dark;--accent:#2563eb}
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;margin:0;color:#1a1a1a;background:#fff;line-height:1.6}
+.hero{padding:4rem 1.25rem;text-align:center;background:linear-gradient(160deg,#eff6ff,#fff)}
+.hero h1{font-size:2.4rem;margin:.2rem 0}
+.hero p{font-size:1.15rem;color:#555;max-width:34rem;margin:.5rem auto 1.5rem}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:.8rem 1.6rem;border-radius:.6rem;font-weight:600}
+.wrap{max-width:60rem;margin:0 auto;padding:3rem 1.25rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1.25rem}
+.card{border:1px solid #e5e7eb;border-radius:.8rem;padding:1.5rem}
+.card h3{margin:.2rem 0}
+footer{text-align:center;padding:2rem 1.25rem;color:#666;border-top:1px solid #eee}
+@media (prefers-color-scheme:dark){body{color:#e8e8e8;background:#141414}.hero{background:linear-gradient(160deg,#10213f,#141414)}.hero p{color:#aaa}.card{border-color:#333}footer{color:#999;border-color:#2a2a2a}}
+</style>
+</head>
+<body>
+<section class="hero">
+<h1>Your Business</h1>
+<p>A short, punchy line describing what you offer and who it is for.</p>
+<a class="btn" href="#contact">Get in touch</a>
+</section>
+<div class="wrap">
+<div class="grid">
+<div class="card"><h3>Service one</h3><p>Describe what you do and why it helps.</p></div>
+<div class="card"><h3>Service two</h3><p>Describe another offering here.</p></div>
+<div class="card"><h3>Service three</h3><p>And a third, to round things out.</p></div>
+</div>
+</div>
+<footer id="contact">
+<h3>Contact</h3>
+<p>you@example.com · (555) 555-5555</p>
+</footer>
+</body>
+</html>
