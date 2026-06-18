@@ -1,0 +1,18 @@
+[Unit]
+Description=blindvault content-addressable blobstore
+After=network.target
+[Service]
+Type=simple
+User=bv-blobstore
+Group=bv-blobstore
+EnvironmentFile=/etc/blindvault/blobstore.env
+ExecStart=/usr/bin/node /opt/bv-blobstore/server.mjs
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/bv-blobstore
+ProtectHome=yes
+PrivateTmp=yes
+[Install]
+WantedBy=multi-user.target

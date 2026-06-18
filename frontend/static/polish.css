@@ -1,0 +1,180 @@
+/* Blindvault — app-wide professional polish layer (Stage 3).
+ *
+ * ADDITIVE by design. Loads AFTER styles.css but uses only LOW-SPECIFICITY,
+ * element-level selectors, so component rules (.bv-*) always win — this layer
+ * fills gaps and adds consistent interaction feel WITHOUT overriding layout or
+ * structure. Keys entirely off the existing design tokens (tokens.css), so it
+ * respects light / dark / high-contrast themes and reduced-motion automatically.
+ * Fully reversible: remove the <link> in index.html (and from the SW precache).
+ */
+
+/* ---- text selection uses the brand accent ---------------------------- */
+::selection { background: var(--accent-soft, rgba(15,106,110,.15)); color: var(--text-primary, inherit); }
+
+/* ---- native-app feel on touch: no grey tap flash -------------------- */
+* { -webkit-tap-highlight-color: transparent; }
+
+/* ---- crisp, consistent keyboard focus (a11y + polish) ---------------
+   Scoped to genuinely interactive controls so it never rings a heading the
+   app programmatically focuses on route change (tabindex="-1"). */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible, summary:focus-visible, [role="button"]:focus-visible,
+[role="tab"]:focus-visible, [role="link"]:focus-visible, [role="menuitem"]:focus-visible,
+[tabindex="0"]:focus-visible, [contenteditable]:focus-visible {
+  outline: 2px solid var(--focus, #B45F06); outline-offset: 2px; border-radius: var(--radius-1, 4px);
+}
+[tabindex="-1"]:focus { outline: none; }   /* route-focus headings etc. — never ring */
+:focus:not(:focus-visible) { outline: none; }
+
+/* ---- clear affordances on disabled / interactive controls ----------- */
+:disabled { cursor: not-allowed; }
+button:not(:disabled), [role="button"]:not(:disabled), summary, label[for], a[href] { cursor: pointer; }
+
+/* ---- slim, themed scrollbars ---------------------------------------- */
+* { scrollbar-width: thin; scrollbar-color: var(--hair-strong, #AEB9C8) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--hair-strong, #AEB9C8); border-radius: var(--radius-pill, 999px); border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary, #6B7280); }
+
+/* ---- gentle, consistent micro-interactions --------------------------
+   Element-level selectors only -> never override component transitions.
+   Honours reduced-motion (durations are 0 in that mode via tokens, and the
+   no-preference guard removes the transform entirely). */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  button, [role="button"], a, summary, input, select, textarea {
+    transition:
+      background-color var(--dur-1, 120ms) var(--ease, ease),
+      border-color var(--dur-1, 120ms) var(--ease, ease),
+      color var(--dur-1, 120ms) var(--ease, ease),
+      box-shadow var(--dur-1, 120ms) var(--ease, ease),
+      transform var(--dur-1, 120ms) var(--ease, ease);
+  }
+  button:not(:disabled):active, [role="button"]:not(:disabled):active { transform: translateY(1px); }
+}
+
+/* ---- typographic refinement: balanced headings, tidy wrapping -------
+   `text-wrap` degrades gracefully (ignored where unsupported). */
+h1, h2, h3 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+
+/* ── Registration finalize: keep the status line visibly "working" ───────────
+   The vault-creation step runs heavy Argon2id key derivation that can block the
+   main thread for many seconds (longer on low-end phones). Static status text
+   read as "frozen/stuck". This spinner is driven by the compositor, so it keeps
+   animating even while JS is busy — signalling progress instead of a hang.
+   Scoped to #bv-finalize while it has a message and is NOT an error. */
+#bv-finalize:not(:empty):not(.bv-error) {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+}
+#bv-finalize:not(:empty):not(.bv-error)::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 1.15em;
+  height: 1.15em;
+  border-radius: 50%;
+  border: 2px solid var(--accent-soft, #cfe6e6);
+  border-top-color: var(--accent, #0F6A6E);
+  animation: bv-reg-spin .8s linear infinite;
+}
+@keyframes bv-reg-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  #bv-finalize:not(:empty):not(.bv-error)::before { animation: none; }
+}
+
+/* ── Hide Chat AI nav link ───────────────────────────────────────────────── */
+.bv-nav [data-id="community-chat"] { display: none !important; }
+
+/* ── Hide map on #/resources ─────────────────────────────────────────────── */
+#bv-res-map,
+.bv-resources-map-hint { display: none !important; }
+
+/* ── Directions step list: arrow-timeline replaces decimal pins ──────────────
+   Overrides .bv-directions-steps in styles.css (higher specificity via id). */
+#bv-dirtool-steps.bv-directions-steps {
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  gap: 0;
+  counter-reset: none;
+}
+
+#bv-dirtool-steps.bv-directions-steps li {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  grid-template-rows: auto;
+  align-items: flex-start;
+  gap: 0 0.6rem;
+  padding: 0.55rem 0 0.55rem 0;
+  border-bottom: none;
+  position: relative;
+}
+
+/* Vertical connecting line through arrow column */
+#bv-dirtool-steps.bv-directions-steps li::before {
+  content: "";
+  position: absolute;
+  left: 0.95rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--hair, #dde3ea);
+  z-index: 0;
+}
+#bv-dirtool-steps.bv-directions-steps li:first-child::before { top: 50%; }
+#bv-dirtool-steps.bv-directions-steps li:last-child::before  { bottom: 50%; }
+
+/* Arrow icon bubble */
+.bv-step-arrow {
+  grid-column: 1;
+  position: relative;
+  z-index: 1;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: var(--surface-2, #f0ece4);
+  border: 2px solid var(--hair, #dde3ea);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+}
+#bv-dirtool-steps.bv-directions-steps li:first-child .bv-step-arrow {
+  background: var(--success-soft, #d4edda);
+  border-color: var(--success, #2e7d32);
+}
+#bv-dirtool-steps.bv-directions-steps li:last-child .bv-step-arrow {
+  background: color-mix(in srgb, var(--accent) 15%, var(--surface));
+  border-color: var(--accent, #2A5D7F);
+}
+
+/* Instruction text */
+.bv-step-instruction {
+  grid-column: 2;
+  font-size: var(--fz-small);
+  line-height: 1.4;
+  color: var(--text);
+  padding-top: 0.25rem;
+}
+
+/* Distance badge */
+.bv-step-dist {
+  grid-column: 3;
+  align-self: start;
+  padding-top: 0.3rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--fz-tiny);
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bv-step-arrow { background: var(--surface-3, #2a2520); border-color: var(--hair, #3a3530); }
+  #bv-dirtool-steps.bv-directions-steps li:first-child .bv-step-arrow { background: #1a3a1e; }
+  #bv-dirtool-steps.bv-directions-steps li:last-child .bv-step-arrow  { background: #112030; }
+}

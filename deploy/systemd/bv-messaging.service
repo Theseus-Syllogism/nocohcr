@@ -1,0 +1,29 @@
+# /etc/systemd/system/bv-messaging.service
+# Zero-knowledge relay for Blindvault app-to-app messaging (/api/v1/messaging/*).
+[Unit]
+Description=BlindVault messaging relay (E2E envelope transport)
+After=network.target blindvault-api.service
+Wants=blindvault-api.service
+
+[Service]
+Type=simple
+User=bv-messaging
+Group=bv-messaging
+EnvironmentFile=/etc/blindvault/messaging.env
+ExecStart=/usr/bin/node /opt/bv-messaging/server.mjs
+Restart=on-failure
+RestartSec=2
+# hardening (mirrors bv-sites)
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/bv-messaging
+ProtectHome=yes
+PrivateTmp=yes
+ProtectControlGroups=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+
+[Install]
+WantedBy=multi-user.target

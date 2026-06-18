@@ -1,0 +1,28 @@
+# /etc/systemd/system/bv-board.service
+[Unit]
+Description=BlindVault Community Board (anonymous local classifieds at /api/board/*)
+After=network.target
+# No hard dep on the API: the board is anonymous and does not call blindvault-api.
+
+[Service]
+Type=simple
+User=bv-board
+Group=bv-board
+EnvironmentFile=/etc/blindvault/board.env
+ExecStart=/usr/bin/node /opt/bv-board/server.mjs
+Restart=on-failure
+RestartSec=2
+# hardening (mirrors bv-sites / bv-schedule)
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/bv-board
+ProtectHome=yes
+PrivateTmp=yes
+ProtectControlGroups=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+
+[Install]
+WantedBy=multi-user.target

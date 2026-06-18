@@ -1,0 +1,18 @@
+[Unit]
+Description=BlindVault scheduled-send service
+After=network.target postgresql.service bv-outbox-relay.service
+[Service]
+Type=simple
+User=bv-schedule
+Group=bv-schedule
+EnvironmentFile=/etc/blindvault/schedule.env
+ExecStart=/usr/bin/node /opt/bv-schedule/server.mjs
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/bv-schedule
+ProtectHome=yes
+PrivateTmp=yes
+[Install]
+WantedBy=multi-user.target

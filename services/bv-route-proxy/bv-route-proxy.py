@@ -29,7 +29,7 @@ PORT = int(os.environ.get("BV_ROUTE_PORT", "8084"))
 VALHALLA_URL = os.environ.get("BV_VALHALLA_URL", "http://127.0.0.1:8002").rstrip("/")
 NOMINATIM_URL = os.environ.get("BV_NOMINATIM_URL", "http://127.0.0.1:8085").rstrip("/")
 TIMEOUT = int(os.environ.get("BV_ROUTE_TIMEOUT", "8"))
-# Loveland / south Larimer County viewbox (left,top,right,bottom =
+# Blindvault / south Larimer County viewbox (left,top,right,bottom =
 # min_lon,max_lat,max_lon,min_lat) — biases address search to the service area.
 VIEWBOX = os.environ.get("BV_GEOCODE_VIEWBOX", "-105.25,40.55,-104.85,40.28")
 UA = "bv-route-proxy/1.0"
@@ -147,7 +147,7 @@ def _normalize(vh: dict, frm: tuple[float, float], to: tuple[float, float], mode
 
 
 def _geocode(q: str, limit: int, bounded: bool) -> list[dict]:
-    """Forward-geocode via Nominatim /search, biased to the Loveland viewbox."""
+    """Forward-geocode via Nominatim /search, biased to the Blindvault viewbox."""
     params = {
         "q": q,
         "format": "jsonv2",

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <!-- XSS hardening: load DOMPurify + register the Trusted Types "default" policy
+       BEFORE any app code, so every innerHTML sink is sanitized once the CSP
+       enforces require-trusted-types-for. Classic (blocking) scripts on purpose. -->
+  <script src="/vendor/purify.min.js"></script>
+  <script src="/vendor/tt-default-policy.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- theme-color is overwritten dynamically by src/design/theme.ts on every
+       theme switch; this initial pair handles first paint while the JS loads. -->
+  <meta name="theme-color" content="#F7F9FB" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#15110D" media="(prefers-color-scheme: dark)" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Blindvault" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <!-- Favicon for browser tabs and search results -->
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
+
+  <!-- Import map: resolves bare specifiers used by Shoelace chunks.
+       CSP hash added to script-src in nginx blindvault-security.conf. -->
+  <script type="importmap">
+{
+  "imports": {
+    "lit": "/vendor/lit/index.js",
+    "lit/": "/vendor/lit/",
+    "lit/static-html.js": "/vendor/lit/static-html.js",
+    "lit/directive-helpers.js": "/vendor/lit/directive-helpers.js",
+    "@floating-ui/dom": "/vendor/external/floating-ui-dom.mjs",
+    "@floating-ui/utils/dom": "/vendor/external/floating-ui-utils-dom.mjs",
+    "@shoelace-style/animations": "/vendor/external/shoelace-animations.mjs",
+    "@shoelace-style/localize": "/vendor/external/shoelace-localize.mjs",
+    "@ctrl/tinycolor": "/vendor/external/ctrl-tinycolor.mjs",
+    "composed-offset-position": "/vendor/external/composed-offset-position.mjs",
+    "qr-creator": "/vendor/external/qr-creator.mjs",
+    "react": "/vendor/external/react-stub.mjs",
+    "@lit/react": "/vendor/external/lit-react-stub.mjs"
+  }
+}
+  </script>
+
+  <link rel="stylesheet" href="/vendor/open-props/normalize.min.css" />
+  <link rel="stylesheet" href="/vendor/open-props/open-props.min.css" />
+  <link rel="stylesheet" href="/vendor/shoelace/themes/light.css" />
+  <link rel="stylesheet" href="/vendor/shoelace/themes/dark.css" media="(prefers-color-scheme: dark)" />
+  <link rel="stylesheet" href="/vendor/bridge.css" />
+
+  <link rel="stylesheet" href="/tokens.css" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/polish.css" />
+  <link rel="preload" href="/fonts/atkinson-hyperlegible-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/atkinson-hyperlegible-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <title>Blindvault Homeless Community Resources</title>
+  <!-- SEO: description shown in Google and other search results -->
+  <meta name="description" content="A free, private app for the Blindvault community. Keep your documents encrypted on your own device, and find food, shelter, hotlines, and local help fast." />
+  <link rel="canonical" href="https://yourdomain.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Blindvault" />
+  <meta property="og:title" content="Blindvault Homeless Community Resources" />
+  <meta property="og:description" content="A free, private app for the Blindvault community. Keep your documents encrypted on your own device, and find food, shelter, hotlines, and local help fast." />
+  <meta property="og:url" content="https://yourdomain.com/" />
+  <meta property="og:image" content="https://yourdomain.com/icons/icon-512.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Blindvault Homeless Community Resources" />
+  <meta name="twitter:description" content="A free, private app for the Blindvault community. Keep your documents encrypted on your own device, and find food, shelter, hotlines, and local help fast." />
+  <meta name="twitter:image" content="https://yourdomain.com/icons/icon-512.png" />
+</head>
+<body>
+  <a class="bv-skip" href="#bv-app">Skip to main content</a>
+  <header class="bv-masthead" role="banner">
+    <a href="#/login" class="bv-wordmark" aria-label="Blindvault Homeless Community Resources">Blindvault</a>
+    <button id="bv-quicklock" type="button" class="bv-quicklock" aria-label="Quick lock — long-press to wipe this device" hidden>
+      <svg width="20" height="20" aria-hidden="true"><use href="#i-lock"/></svg>
+    </button>
+  </header>
+  <main id="bv-app" tabindex="-1"></main>
+
+  <!-- Perf: eagerly register the 10 Shoelace components the app actually uses
+       in ONE bundle (vs the autoloader's ~246-request cold-load fan-out). The
+       autoloader below stays as a fail-safe — it skips already-defined tags
+       (customElements.get) and still lazy-loads anything not in this bundle. -->
+  <script type="module" src="/vendor/shoelace/bv-shoelace-common.js"></script>
+  <!-- Shoelace autoloader: watches DOM for <sl-*> tags and lazy-loads
+       component definitions from /vendor/shoelace/components/ -->
+  <script type="module" src="/vendor/shoelace-init.js"></script>
+  <script type="module" src="/vendor/shoelace/shoelace-autoloader.js"></script>
+  <script src="/vendor/lucide-loader.js"></script>
+  <!-- iOS Safari "Add to Home Screen" hint (iOS can't fire the install prompt) -->
+  <script defer src="/pwa-ios-hint.js"></script>
+
+  <script type="module" src="/dist/main-2567C9E2.js"></script>
+  <script defer src="/directions-banner.js"></script>
+  <script defer src="/directions-click-patch.js"></script>
+</body>
+</html>

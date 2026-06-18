@@ -1,0 +1,13 @@
+# Append to /etc/postgresql/16/main/pg_hba.conf and remove any conflicting
+# trust/md5 lines for the blindvault role. Order matters — keep this BEFORE the
+# default `host all all ... scram-sha-256` line.
+
+# blindvault: TLS-only, scram-sha-256, localhost only.
+hostssl   blindvault         blindvault          127.0.0.1/32   scram-sha-256
+hostssl   blindvault         blindvault          ::1/128        scram-sha-256
+hostssl   blindvault         blindvault_admin    127.0.0.1/32   scram-sha-256
+
+# Explicit reject for non-TLS attempts on the blindvault DB. Without this the
+# default host line below would happily serve cleartext SCRAM.
+hostnossl blindvault         all                 0.0.0.0/0      reject
+hostnossl blindvault         all                 ::/0           reject

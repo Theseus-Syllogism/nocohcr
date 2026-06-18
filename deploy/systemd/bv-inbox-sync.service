@@ -1,0 +1,6 @@
+[Unit]
+Description=Sync registered encrypted-inbox addresses into Postfix map
+After=postgresql.service postfix.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/bv-inbox-sync.sh

@@ -33,7 +33,7 @@ INTERNAL_TOKEN: str = _env("BV_OUTBOX_INTERNAL_TOKEN", "")
 # must match the DKIM signing domain or upstream MX servers will reject as
 # DMARC fail. Default mirrors the production tenant.
 FROM_ADDRESS: str = _env("BV_FROM_ADDRESS", "noreply@yourdomain.com")
-FROM_NAME:    str = _env("BV_FROM_NAME",    "LovelandVault")
+FROM_NAME:    str = _env("BV_FROM_NAME",    "BlindvaultVault")
 
 # ---- API back-end -----------------------------------------------------------
 API_BASE: str = _env("BV_OUTBOX_API_BASE", "http://127.0.0.1:8080")

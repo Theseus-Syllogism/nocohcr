@@ -1,0 +1,7 @@
+[Unit]
+Description=Periodically sync encrypted-inbox addresses for Postfix
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=60s
+[Install]
+WantedBy=timers.target

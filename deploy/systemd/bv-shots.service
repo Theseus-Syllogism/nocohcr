@@ -1,0 +1,35 @@
+[Unit]
+Description=BlindVault site screenshots (on-demand homepage previews for #/explore)
+After=network.target nginx.service
+
+[Service]
+Type=simple
+# Runs as root: the Playwright Chromium binary lives under /root/.cache/ms-playwright.
+# Render target is the LOCAL, pre-sanitized, JS-disabled published site, so no
+# untrusted code executes; --no-sandbox is set in code. Browser spawns on demand only.
+User=root
+WorkingDirectory=/opt/bv-shots
+EnvironmentFile=/etc/blindvault/shots.env
+ExecStart=/usr/bin/node /opt/bv-shots/server.mjs
+Restart=on-failure
+RestartSec=3
+
+# resource guard (this box has a self-DoS history — keep the browser bounded)
+MemoryMax=900M
+CPUQuota=60%
+TasksMax=300
+
+# hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/bv-shots
+ProtectHome=read-only
+ProtectControlGroups=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,46 @@
+[Unit]
+Description=blindvault book proxy (libgen.li search + download + save-to-library)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/blindvault/bv-book-proxy.py
+Restart=on-failure
+RestartSec=5
+
+Environment=BV_BOOKS_HOST=127.0.0.1
+Environment=BV_BOOKS_PORT=8083
+Environment=BV_BOOKS_PAGE_SIZE=25
+Environment=BV_BOOKS_FETCH_COUNT=100
+Environment=BV_BOOKS_CACHE_TTL=300
+
+# Save-to-library: write into the Kavita library volume + trigger a scan.
+Environment=BV_BOOKS_LIBRARY_DIR=/opt/kavita/library/books
+Environment=BV_KAVITA_URL=http://127.0.0.1:5000
+Environment=BV_KAVITA_API_KEY=CHANGE_ME
+Environment=BV_KAVITA_LIBRARY_ID=1
+Environment=BV_EBOOK_CONVERT=/usr/bin/ebook-convert
+
+# Calibre (ebook-convert) writes config/cache under HOME — point it at the
+# service StateDirectory so it works under ProtectHome/ProtectSystem.
+Environment=HOME=/var/lib/bv-book-proxy
+Environment=CALIBRE_CONFIG_DIRECTORY=/var/lib/bv-book-proxy/calibre
+Environment=CALIBRE_TEMP_DIR=/tmp
+
+# Dedicated unprivileged user (owns the library books dir for writes).
+User=bvbooks
+Group=bvbooks
+StateDirectory=bv-book-proxy
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/opt/kavita/library/books
+ProtectHome=yes
+PrivateTmp=yes
+RestrictAddressFamilies=AF_INET AF_INET6
+LockPersonality=yes
+RestrictRealtime=yes
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

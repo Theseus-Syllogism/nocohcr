@@ -1,0 +1,1 @@
+,{id:"site",label:"My Website",href:"#/site",iconId:"document",gatedWhen:u=>u!=="authenticated",section:"personal"},{id:"explore",label:"Explore",href:"#/explore",iconId:"compass",gatedWhen:u=>u!=="authenticated",section:"personal"},{id:"resume",label:"Resume",href:"#/resume",iconId:"pencil",gatedWhen:u=>u!=="authenticated",section:"personal"}

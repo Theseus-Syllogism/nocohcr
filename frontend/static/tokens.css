@@ -1,0 +1,230 @@
+/* Blindvault design tokens — single source of truth.
+ *
+ *   Spacing scale:   4 / 8 / 12 / 16 / 24 / 32 / 48 / 64
+ *   Type scale:      body 16–18 px clamp(), headings proportional
+ *   Color tokens:    semantic (bg/surface/text-primary/...), 3 themes
+ *   Theme switch:    prefers-color-scheme + manual override + high-contrast
+ *
+ * Theme selection is applied via `data-theme="light|dark|high-contrast"` on
+ * <html>. When the attribute is absent (the default), the rules below use
+ * prefers-color-scheme + prefers-contrast media queries. The theme manager
+ * (src/design/theme.ts) writes the attribute when the user manually picks
+ * a theme.
+ */
+
+/* ---- Atkinson Hyperlegible — self-hosted, OFL ----------------------- */
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/atkinson-hyperlegible-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/atkinson-hyperlegible-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/atkinson-hyperlegible-latin-400-italic.woff2") format("woff2");
+}
+
+:root {
+  /* ===== Spacing scale (px) ============================================ */
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+
+  /* ===== Radii ======================================================== */
+  --radius-1: 4px;
+  --radius-2: 6px;
+  --radius-3: 10px;
+  --radius-4: 14px;
+  --radius-pill: 999px;
+
+  /* ===== Typography ==================================================== */
+  /* Body 16–18 px fluid between 320–768 px viewports. */
+  --fz-body:    clamp(1rem, 0.92rem + 0.5vw, 1.125rem);              /* 16–18 */
+  --fz-small:   clamp(0.875rem, 0.84rem + 0.2vw, 0.9375rem);         /* 14–15 */
+  --fz-tiny:    clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);         /* 12–13 */
+  --fz-h1:      clamp(1.625rem, 1.2rem + 2vw, 2.25rem);              /* 26–36 */
+  --fz-h2:      clamp(1.25rem, 1.1rem + 0.9vw, 1.5rem);              /* 20–24 */
+  --fz-h3:      clamp(1.0625rem, 1rem + 0.4vw, 1.1875rem);           /* 17–19 */
+  --fz-display: clamp(2rem, 1.4rem + 3vw, 3rem);                      /* 32–48 */
+
+  --lh-body:   1.55;
+  --lh-tight:  1.2;
+  --lh-prose:  1.7;
+  --measure:   65ch;
+
+  --font-sans: "Atkinson Hyperlegible", ui-sans-serif, system-ui,
+               -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", "Menlo",
+               "Consolas", monospace;
+
+  /* ===== Z-index ====================================================== */
+  --z-toast:    1000;
+  --z-modal:    900;
+  --z-sticky:   100;
+  --z-nav:      50;
+
+  /* ===== Motion ======================================================== */
+  --ease:       cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-1:      120ms;
+  --dur-2:      200ms;
+  --dur-3:      320ms;
+
+  /* ===== Layout breakpoints ============================================ */
+  --bp-sm: 36rem;
+  --bp-md: 48rem;    /* 768 px — bottom nav ↔ sidebar pivot */
+  --bp-lg: 64rem;
+}
+
+/* ===== Normal light theme (default; high-contrast stays opt-in / media) === */
+:root,
+html[data-theme="light"] {
+  --bg:           #F7F9FB;
+  --surface:      #FFFFFF;
+  --surface-2:   #F1F5F9;
+  --surface-elevated: #FFFFFF;
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-tertiary:  #6B7280;
+  --accent:       #0F6A6E;
+  --accent-soft:  color-mix(in srgb, #0F6A6E 11%, transparent);
+  --accent-ink:   #FFFFFF;
+  --on-accent:    #FFFFFF;
+  --success:      #216E4E;
+  --warning:      #9A5B00;
+  --warning-bg:   #FFF4CC;
+  --alert:        #B42318;
+  --alert-bg:     color-mix(in srgb, #B42318 8%, var(--surface));
+  --hair:         #D7DEE8;
+  --hair-strong: #AEB9C8;
+  --border:       var(--hair);
+  --focus:        #B45F06;
+  --shadow-1:     0 1px 2px rgba(17,24,39,0.04), 0 8px 20px -18px rgba(17,24,39,0.22);
+  --shadow-2:     0 1px 2px rgba(17,24,39,0.06), 0 18px 44px -28px rgba(17,24,39,0.32);
+}
+
+/* ===== Dark theme ===================================================== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg:           #15110D;
+    --surface:      #1D1812;
+    --surface-2:   #25201A;
+    --text-primary: #ECE5D3;
+    --text-secondary: #B5AC97;
+    --text-tertiary:  #8A8275;
+    --accent:       #7BB8C9;
+    --accent-soft:  color-mix(in srgb, #7BB8C9 16%, transparent);
+    --accent-ink:   #15110D;
+    --on-accent:    #15110D;
+    --success:      #8FB880;
+    --warning:      #E0BB6D;
+    --warning-bg:   #2E2407;
+    --alert:        #E58A82;
+    --alert-bg:     color-mix(in srgb, #E58A82 12%, var(--surface));
+    --hair:         #3A2F22;
+    --hair-strong: #5A4D38;
+    --border:       var(--hair);
+    --surface-elevated: #25201A;
+    --focus:        #D4A85B;
+    --shadow-1:     0 1px 0 rgba(0,0,0,0.4), 0 6px 16px -12px rgba(0,0,0,0.6);
+    --shadow-2:     0 1px 0 rgba(0,0,0,0.5), 0 16px 40px -24px rgba(0,0,0,0.85);
+  }
+}
+html[data-theme="dark"] {
+  --bg:           #15110D;
+  --surface:      #1D1812;
+  --surface-2:   #25201A;
+  --text-primary: #ECE5D3;
+  --text-secondary: #B5AC97;
+  --text-tertiary:  #8A8275;
+  --accent:       #7BB8C9;
+  --accent-soft:  color-mix(in srgb, #7BB8C9 16%, transparent);
+  --accent-ink:   #15110D;
+  --on-accent:    #15110D;
+  --success:      #8FB880;
+  --warning:      #E0BB6D;
+  --warning-bg:   #2E2407;
+  --alert:        #E58A82;
+  --alert-bg:     color-mix(in srgb, #E58A82 12%, var(--surface));
+  --hair:         #3A2F22;
+  --hair-strong: #5A4D38;
+  --border:       var(--hair);
+  --surface-elevated: #25201A;
+  --focus:        #D4A85B;
+  --shadow-1:     0 1px 0 rgba(0,0,0,0.4), 0 6px 16px -12px rgba(0,0,0,0.6);
+  --shadow-2:     0 1px 0 rgba(0,0,0,0.5), 0 16px 40px -24px rgba(0,0,0,0.85);
+}
+
+/* ===== High-contrast theme — WCAG AAA where possible ================== */
+@media (prefers-contrast: more) {
+  :root:not([data-theme]) {
+    --bg:           #FFFFFF;
+    --surface:      #FFFFFF;
+    --surface-2:   #FFFFFF;
+    --text-primary: #000000;
+    --text-secondary: #000000;
+    --text-tertiary:  #1A1A1A;
+    --accent:       #003366;
+    --accent-soft:  #DFE9F2;
+    --accent-ink:   #FFFFFF;
+    --on-accent:    #FFFFFF;
+    --success:      #004000;
+    --warning:      #5A3500;
+    --warning-bg:   #FFE7A8;
+    --alert:        #8A0000;
+    --alert-bg:     #FFDCDC;
+    --hair:         #000000;
+    --hair-strong: #000000;
+    --border:       #000000;
+    --surface-elevated: #FFFFFF;
+    --focus:        #003366;
+    --shadow-1:     none;
+    --shadow-2:     none;
+  }
+}
+html[data-theme="high-contrast"] {
+  --bg:           #FFFFFF;
+  --surface:      #FFFFFF;
+  --surface-2:   #FFFFFF;
+  --surface-elevated: #FFFFFF;
+  --text-primary: #000000;
+  --text-secondary: #000000;
+  --text-tertiary:  #1A1A1A;
+  --accent:       #003366;
+  --accent-soft:  #DFE9F2;
+  --accent-ink:   #FFFFFF;
+  --on-accent:    #FFFFFF;
+  --success:      #004000;
+  --warning:      #5A3500;
+  --warning-bg:   #FFE7A8;
+  --alert:        #8A0000;
+  --alert-bg:     #FFDCDC;
+  --hair:         #000000;
+  --hair-strong: #000000;
+  --border:       #000000;
+  --focus:        #003366;
+  --shadow-1:     none;
+  --shadow-2:     none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-1: 0ms; --dur-2: 0ms; --dur-3: 0ms;
+  }
+}

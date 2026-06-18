@@ -1,0 +1,67 @@
+[Unit]
+# VPS (yourdomain.com) variant of bv-download-proxy.service. Differs from the
+# homelab unit: binds LOOPBACK only (nginx on the same host reverse-proxies
+# /api/download/*), uses the standalone /usr/local/bin/yt-dlp, and runs under
+# a systemd DynamicUser with a StateDirectory instead of a fixed work path.
+Description=blindvault download proxy (yt-dlp backend for Digital Library)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/blindvault/bv-download-proxy.py
+Restart=on-failure
+RestartSec=5
+
+# Public VPS: bind to loopback ONLY. nginx proxies /api/download/* here.
+# 8082 must never be reachable from the internet.
+Environment=BV_DOWNLOAD_HOST=127.0.0.1
+Environment=BV_DOWNLOAD_PORT=8082
+
+# Standalone yt-dlp binary (installed from the yt-dlp GitHub release).
+Environment=BV_YTDLP_BIN=/usr/local/bin/yt-dlp
+
+# Work dir = the systemd StateDirectory (auto-created, owned by the transient
+# DynamicUser). Keep yt-dlp's HOME + cache inside it so ProtectHome=yes holds.
+Environment=BV_DOWNLOAD_WORK_ROOT=/var/lib/bv-download
+Environment=HOME=/var/lib/bv-download
+Environment=XDG_CACHE_HOME=/var/lib/bv-download/.cache
+# Optional logged-in cookies.txt (enables YouTube etc. from this datacenter IP).
+# Lives inside the writable StateDirectory so yt-dlp can persist refreshed
+# session cookies; used only if the file exists. 0600, owned by the service user.
+Environment=BV_DOWNLOAD_COOKIES=/var/lib/bv-download/yt-cookies.txt
+Environment=BV_DOWNLOAD_JOB_TTL_S=3600
+Environment=BV_DOWNLOAD_JOB_TIMEOUT_S=300
+
+# Caps: 500 MB per job, 3 concurrent yt-dlp processes max. Per-IP request
+# throttling is enforced one layer up, at nginx (bv_download zone, 12 r/min).
+Environment=BV_DOWNLOAD_MAX_FILESIZE=500M
+Environment=BV_DOWNLOAD_MAX_CONCURRENT=3
+
+# The built-in educational/archival hostname allowlist applies (yt-dlp host is
+# re-checked after redirect resolution). Override to tighten/extend:
+# Environment=BV_DOWNLOAD_ALLOWLIST=archive.org,librivox.org,ted.com,vimeo.com
+
+# ---- Hardening ----------------------------------------------------------
+# Fixed (not Dynamic) service user: the cookies.txt holds a live login session
+# that yt-dlp rewrites with refreshed tokens, so it needs stable ownership of
+# the StateDirectory across restarts. StateDirectory is 0700 so the session
+# cookies are not world-readable.
+User=bvdownload
+Group=bvdownload
+StateDirectory=bv-download
+StateDirectoryMode=0700
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+LockPersonality=yes
+RestrictRealtime=yes
+SystemCallArchitectures=native
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

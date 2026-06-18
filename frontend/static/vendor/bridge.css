@@ -1,0 +1,150 @@
+/* Bridge: Open Props ↔ Blindvault tokens ↔ Shoelace theming.
+ *
+ * This file maps Open Props utility tokens into our existing semantic
+ * custom properties where they overlap, and sets Shoelace CSS custom
+ * properties so components match our design language.
+ */
+
+/* ===== Open Props → Blindvault token bridges ===========================
+ * We don't override our tokens — the existing tokens.css stays authoritative.
+ * Instead, we set Open Props semantic tokens to match our palette so
+ * utilities like var(--shadow-2) and var(--border-size-1) blend in.
+ */
+
+:root {
+  /* Map Open Props surfaces to our palette */
+  --op-surface-1: var(--surface);
+  --op-surface-2: var(--surface-2);
+  --op-surface-3: color-mix(in srgb, var(--surface-2) 80%, var(--text-primary));
+  --op-surface-4: color-mix(in srgb, var(--surface-2) 60%, var(--text-primary));
+
+  /* Tell Open Props about our accent */
+  --brand: var(--accent);
+}
+
+/* ===== Shoelace theme overrides =========================================
+ * Shoelace uses --sl-* custom properties. Map them to our design tokens
+ * so Shoelace components match the Blindvault look without custom CSS per component.
+ */
+:root {
+  /* Primary palette */
+  --sl-color-primary-50: color-mix(in srgb, var(--accent) 10%, white);
+  --sl-color-primary-100: color-mix(in srgb, var(--accent) 20%, white);
+  --sl-color-primary-200: color-mix(in srgb, var(--accent) 35%, white);
+  --sl-color-primary-300: color-mix(in srgb, var(--accent) 50%, white);
+  --sl-color-primary-400: color-mix(in srgb, var(--accent) 65%, white);
+  --sl-color-primary-500: var(--accent);
+  --sl-color-primary-600: color-mix(in srgb, var(--accent) 80%, black);
+  --sl-color-primary-700: color-mix(in srgb, var(--accent) 65%, black);
+  --sl-color-primary-800: color-mix(in srgb, var(--accent) 50%, black);
+  --sl-color-primary-900: color-mix(in srgb, var(--accent) 35%, black);
+  --sl-color-primary-950: color-mix(in srgb, var(--accent) 20%, black);
+
+  /* Neutral palette (mapped to our warm grays) */
+  --sl-color-neutral-0: var(--bg);
+  --sl-color-neutral-50: var(--surface);
+  --sl-color-neutral-100: var(--surface-2);
+  --sl-color-neutral-200: var(--hair);
+  --sl-color-neutral-300: var(--hair-strong);
+  --sl-color-neutral-400: var(--text-tertiary);
+  --sl-color-neutral-500: var(--text-secondary);
+  --sl-color-neutral-600: color-mix(in srgb, var(--text-secondary) 80%, var(--text-primary));
+  --sl-color-neutral-700: color-mix(in srgb, var(--text-secondary) 50%, var(--text-primary));
+  --sl-color-neutral-800: color-mix(in srgb, var(--text-secondary) 25%, var(--text-primary));
+  --sl-color-neutral-900: var(--text-primary);
+  --sl-color-neutral-950: color-mix(in srgb, var(--text-primary) 85%, black);
+
+  /* Success / Warning / Danger */
+  --sl-color-success-500: var(--success);
+  --sl-color-warning-500: var(--warning);
+  --sl-color-danger-500: var(--alert);
+
+  /* Typography */
+  --sl-font-sans: var(--font-sans);
+  --sl-font-mono: var(--font-mono);
+  --sl-font-size-2x-small: var(--fz-tiny);
+  --sl-font-size-x-small: var(--fz-tiny);
+  --sl-font-size-small: var(--fz-small);
+  --sl-font-size-medium: var(--fz-body);
+  --sl-font-size-large: var(--fz-h3);
+  --sl-font-size-x-large: var(--fz-h2);
+
+  /* Borders / Radii */
+  --sl-border-radius-small: var(--radius-1);
+  --sl-border-radius-medium: var(--radius-2);
+  --sl-border-radius-large: var(--radius-3);
+  --sl-border-radius-x-large: var(--radius-4);
+  --sl-border-radius-pill: var(--radius-pill);
+
+  /* Shadows */
+  --sl-shadow-small: var(--shadow-1);
+  --sl-shadow-medium: var(--shadow-2);
+  --sl-shadow-large: 0 1px 0 rgba(0,0,0,0.05), 0 24px 60px -32px rgba(0,0,0,0.35);
+  --sl-shadow-x-large: 0 1px 0 rgba(0,0,0,0.07), 0 32px 80px -40px rgba(0,0,0,0.5);
+
+  /* Spacing */
+  --sl-spacing-3x-small: var(--space-1);
+  --sl-spacing-2x-small: var(--space-1);
+  --sl-spacing-x-small: var(--space-2);
+  --sl-spacing-small: var(--space-3);
+  --sl-spacing-medium: var(--space-4);
+  --sl-spacing-large: var(--space-5);
+  --sl-spacing-x-large: var(--space-6);
+  --sl-spacing-2x-large: var(--space-7);
+
+  /* Transitions */
+  --sl-transition-x-fast: var(--dur-1);
+  --sl-transition-fast: var(--dur-1);
+  --sl-transition-medium: var(--dur-2);
+  --sl-transition-slow: var(--dur-3);
+  --sl-transition-x-slow: var(--dur-3);
+
+  /* Focus ring */
+  --sl-focus-ring-color: var(--focus);
+  --sl-focus-ring-width: 2px;
+  --sl-focus-ring: 0 0 0 var(--sl-focus-ring-width) var(--sl-focus-ring-color);
+
+  /* Input overrides */
+  --sl-input-background-fill: var(--surface-2);
+  --sl-input-color: var(--text-primary);
+  --sl-input-border-color: var(--hair);
+
+  /* Overlay */
+  --sl-overlay-background-color: rgba(0, 0, 0, 0.45);
+}
+
+/* ===== Dark theme overrides for Shoelace ================================
+ * Our dark theme uses warm grays (#15110D base). Shoelace's dark.css
+ * provides --sl-color-neutral-* for dark mode, but we override the
+ * surface/background tokens to match our palette.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --sl-color-neutral-0: #15110D;
+    --sl-color-neutral-50: #1D1812;
+    --sl-color-neutral-100: #25201A;
+    --sl-color-neutral-200: #3A2F22;
+    --sl-color-neutral-300: #5A4D38;
+    --sl-color-neutral-400: #8A8275;
+    --sl-color-neutral-500: #B5AC97;
+    --sl-color-neutral-600: #C8C1AB;
+    --sl-color-neutral-700: #DAD4C2;
+    --sl-color-neutral-800: #E8E3D5;
+    --sl-color-neutral-900: #ECE5D3;
+    --sl-color-neutral-950: #F5F1E8;
+  }
+}
+html[data-theme="dark"] {
+  --sl-color-neutral-0: #15110D;
+  --sl-color-neutral-50: #1D1812;
+  --sl-color-neutral-100: #25201A;
+  --sl-color-neutral-200: #3A2F22;
+  --sl-color-neutral-300: #5A4D38;
+  --sl-color-neutral-400: #8A8275;
+  --sl-color-neutral-500: #B5AC97;
+  --sl-color-neutral-600: #C8C1AB;
+  --sl-color-neutral-700: #DAD4C2;
+  --sl-color-neutral-800: #E8E3D5;
+  --sl-color-neutral-900: #ECE5D3;
+  --sl-color-neutral-950: #F5F1E8;
+}

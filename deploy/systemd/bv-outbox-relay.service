@@ -1,0 +1,37 @@
+[Unit]
+Description=blindvault outbound SMTP relay (DKIM-signing)
+Documentation=file:///root/blindvault/tools/bv-outbox-relay/
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/blindvault/bv-outbox-relay.env
+
+# Dormancy gate: abort with a clear message if INBOX_ENABLED != 1.
+ExecStartPre=/bin/sh -c \
+  'test "${INBOX_ENABLED}" = "1" || { echo "bv-outbox-relay: INBOX_ENABLED is not 1 — unit is dormant"; exit 1; }'
+
+ExecStart=/opt/bv-outbox-relay/venv/bin/python3 /opt/bv-outbox-relay/bv_outbox_relay.py
+
+Restart=on-failure
+RestartSec=10s
+
+# --- Hardening ---
+User=bv-outbox
+Group=bv-outbox
+NoNewPrivileges=true
+ProtectSystem=strict
+# DKIM key directory must be readable; adjust ReadOnlyPaths if key is elsewhere.
+ReadOnlyPaths=/etc/blindvault/dkim/
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+SystemCallFilter=@system-service
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=
+
+[Install]
+WantedBy=multi-user.target

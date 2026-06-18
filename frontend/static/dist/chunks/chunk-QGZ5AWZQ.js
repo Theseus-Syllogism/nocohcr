@@ -1,0 +1,1 @@
+import{v as i}from"./chunk-N22AHJKI.js";async function o(t){if(t.privSign)return await i(t.identityIdB64,t.privSign);let r=Math.floor(Date.now()/1e3);return`${t.identityIdB64}.${r}.AAAA`}export{o as a};

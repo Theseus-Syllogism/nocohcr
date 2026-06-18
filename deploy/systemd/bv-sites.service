@@ -1,0 +1,28 @@
+# /etc/systemd/system/bv-sites.service
+[Unit]
+Description=BlindVault user sites (Neocities-style <handle>.yourdomain.com)
+After=network.target blindvault-api.service
+Wants=blindvault-api.service
+
+[Service]
+Type=simple
+User=bv-sites
+Group=bv-sites
+EnvironmentFile=/etc/blindvault/sites.env
+ExecStart=/usr/bin/node /opt/bv-sites/server.mjs
+Restart=on-failure
+RestartSec=2
+# hardening (mirrors bv-schedule)
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/bv-sites
+ProtectHome=yes
+PrivateTmp=yes
+ProtectControlGroups=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+
+[Install]
+WantedBy=multi-user.target

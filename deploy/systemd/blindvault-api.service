@@ -1,0 +1,62 @@
+[Unit]
+Description=blindvault API (axum)
+After=network-online.target postgresql.service
+Wants=network-online.target
+Requires=postgresql.service
+
+[Service]
+Type=simple
+User=blindvault
+Group=blindvault
+WorkingDirectory=/opt/blindvault
+EnvironmentFile=/etc/blindvault/api.env
+ExecStart=/opt/blindvault/bin/blindvault-api
+Restart=on-failure
+RestartSec=2
+
+# --- Hardening --------------------------------------------------------------
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+PrivateIPC=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectProc=invisible
+ProcSubset=pid
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources @mount @debug @cpu-emulation @obsolete @raw-io @reboot @swap
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+UMask=0077
+
+# Capability bounding: drop everything. The API does not bind below 1024
+# (nginx proxies); it does not need any caps.
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+# Writable paths (everything else is read-only via ProtectSystem=strict)
+ReadWritePaths=/var/lib/blindvault
+StateDirectory=blindvault
+StateDirectoryMode=0700
+LogsDirectory=blindvault
+LogsDirectoryMode=0750
+ConfigurationDirectory=blindvault
+ConfigurationDirectoryMode=0750
+
+# Resource limits
+LimitNOFILE=4096
+LimitNPROC=128
+TasksMax=256
+
+[Install]
+WantedBy=multi-user.target

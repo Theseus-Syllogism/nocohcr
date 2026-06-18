@@ -1,0 +1,111 @@
+{
+  "resources": [
+    {
+      "id": "211-colorado",
+      "name": "2-1-1 Colorado",
+      "description": "Statewide referrals for shelter, food, rent help, health care, transportation, and crisis support.",
+      "url": "https://www.211colorado.org/",
+      "locations": [
+        {
+          "latitude": 40.3978,
+          "longitude": -105.0749,
+          "addresses": [
+            {
+              "address_1": "Available by phone and web",
+              "city": "Blindvault",
+              "state_province": "CO",
+              "postal_code": ""
+            }
+          ],
+          "phones": [
+            {
+              "number": "211"
+            }
+          ],
+          "schedules": []
+        }
+      ],
+      "services": [
+        {
+          "name": "Resource referrals",
+          "description": "Call 2-1-1 for local help finding shelter, food, medical care, benefits, and other support."
+        }
+      ],
+      "_meta": {
+        "source": "Blindvault",
+        "last_verified": "2026-06-01",
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "local-public-library",
+      "name": "Local Public Library",
+      "description": "Public computers, Wi-Fi, restrooms, charging, printing, and local information access.",
+      "url": "https://www.example-library.org/",
+      "locations": [
+        {
+          "latitude": 40.3958,
+          "longitude": -105.0736,
+          "addresses": [
+            {
+              "address_1": "300 N Adams Ave",
+              "city": "Blindvault",
+              "state_province": "CO",
+              "postal_code": "80537"
+            }
+          ],
+          "phones": [
+            {
+              "number": "+1 970 962 2665"
+            }
+          ],
+          "schedules": []
+        }
+      ],
+      "services": [
+        {
+          "name": "Internet and charging",
+          "description": "Public access to computers, Wi-Fi, outlets, and information services."
+        }
+      ],
+      "_meta": {
+        "source": "Blindvault",
+        "last_verified": "2026-06-01",
+        "confidence": 0.7
+      }
+    },
+    {
+      "id": "homeward-alliance",
+      "name": "Homeward Alliance",
+      "description": "Northern Colorado nonprofit connecting people experiencing homelessness with basic needs and services.",
+      "url": "https://www.homewardalliance.org/",
+      "locations": [
+        {
+          "latitude": 40.5853,
+          "longitude": -105.0844,
+          "addresses": [
+            {
+              "address_1": "Northern Colorado service area",
+              "city": "Fort Collins",
+              "state_province": "CO",
+              "postal_code": ""
+            }
+          ],
+          "phones": [],
+          "schedules": []
+        }
+      ],
+      "services": [
+        {
+          "name": "Homelessness support",
+          "description": "Connection to practical support and partner services in Northern Colorado."
+        }
+      ],
+      "_meta": {
+        "source": "Blindvault",
+        "last_verified": "2026-06-01",
+        "confidence": 0.7
+      }
+    }
+  ]
+}
