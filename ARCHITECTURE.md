@@ -1,6 +1,6 @@
-# Blindvault Architecture
+# Nocovault Architecture
 
-Blindvault is a privacy-first PWA (Progressive Web App) with a single-page frontend and a fleet of small, single-purpose backend services. All services listen on loopback only; nginx is the sole public-facing process.
+Nocovault is a privacy-first PWA (Progressive Web App) with a single-page frontend and a fleet of small, single-purpose backend services. All services listen on loopback only; nginx is the sole public-facing process.
 
 ## System Diagram
 
@@ -13,7 +13,7 @@ Browser / Mobile PWA
 │                          nginx                                │
 │                   (edge, hardened)                            │
 │                                                               │
-│  /                  → static files (/var/www/blindvault)      │
+│  /                  → static files (/var/www/nocovault)       │
 │  /dist/*            → content-hashed JS/CSS chunks            │
 │  /vendor/*,/fonts/* → immutable vendor assets                 │
 │  /site-thumbs/      → /var/lib/bv-shots/thumbs/<handle>.jpg  │
@@ -22,44 +22,45 @@ Browser / Mobile PWA
 │  <handle>.domain    → /var/lib/bv-sites/<handle>/published/   │
 └─────────┬─────────────────────────────────────────────────────┘
           │ loopback only
-          ├──────────────────────────────────────────────────────┐
-          │                                                      │
-          ▼ :8088                                                │
-┌─────────────────────┐                                         │
-│   blindvault-api    │  Rust/Axum binary                       │
-│   (core auth/vault) │  PostgreSQL 16 (TLS loopback)           │
-│                     │  ← /api/* (catch-all)                   │
-└─────────┬───────────┘                                         │
-          │ Bearer token delegation                             │
-          │ (services call /api/users/me to validate tokens)    │
-          ▼                                                      │
-┌──────────────────────────────────────────────────────────────┐│
-│                   Node.js micro-services                      ││
-│                                                              ││
-│  bv-blobstore  :8799  ← /api/ (vault files, inbox bodies)   ││
-│  bv-sites      :8800  ← /api/sites/*                        ││
-│  bv-board      :8802  ← /api/board/*                        ││
-│  bv-shots      :8803  ← (internal only, fired by bv-sites)  ││
-│  bv-resume     :8805  ← /api/resume/*                       ││
-└──────────────────────────────────────────────────────────────┘│
-                                                                │
-┌──────────────────────────────────────────────────────────────┘
-│   Python services
-│
-│  bv-route-proxy   :8084  ← /api/route, /api/geocode
-│    └── Valhalla   :8002  (local routing engine)
-│    └── Nominatim  :8085  (local geocoder)
-│
-│  bv-download-proxy :8082 ← /api/download/*
-│    └── yt-dlp (subprocess, venv)
-│
-│  bv-book-proxy    :8083  ← /api/books/*
-│    └── Kavita library (local)
+          │
+          ▼ :8088
+┌───────────────────────────────────────────────────────────────┐
+│   nocovault-api   (core auth/vault)                           │
+│                                                               │
+│   Rust/Axum binary · PostgreSQL 16 (TLS loopback)            │
+│   ← /api/* (catch-all)                                       │
+└─────────┬─────────────────────────────────────────────────────┘
+          │ Bearer token delegation
+          │ (services call /api/users/me to validate tokens)
+          ▼
+┌───────────────────────────────────────────────────────────────┐
+│                   Node.js micro-services                      │
+│                                                               │
+│  bv-blobstore  :8799  ← /api/ (vault files, inbox bodies)    │
+│  bv-sites      :8800  ← /api/sites/*                         │
+│  bv-board      :8802  ← /api/board/*                         │
+│  bv-shots      :8803  ← (internal only, fired by bv-sites)   │
+│  bv-resume     :8805  ← /api/resume/*                        │
+└───────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────┐
+│   Python services                                             │
+│                                                               │
+│  bv-route-proxy    :8084  ← /api/route, /api/geocode         │
+│    └── Valhalla    :8002  (local routing engine)              │
+│    └── Nominatim   :8085  (local geocoder)                    │
+│                                                               │
+│  bv-download-proxy :8082  ← /api/download/*                  │
+│    └── yt-dlp (subprocess, venv)                              │
+│                                                               │
+│  bv-book-proxy     :8083  ← /api/books/*                     │
+│    └── Kavita library (local)                                 │
+└───────────────────────────────────────────────────────────────┘
 ```
 
 ## Services
 
-### blindvault-api (`:8088`)
+### nocovault-api (`:8088`)
 The core identity, vault, inbox, and messaging backend. A compiled Rust/Axum binary backed by PostgreSQL 16. Handles account creation, authentication (Bearer tokens), E2EE vault blob routing (delegated to bv-blobstore), and messaging.
 
 ### bv-blobstore (`:8799`)
@@ -97,20 +98,20 @@ The frontend is a vanilla JS SPA (no framework build step; the bundle is produce
 ## Data Storage Layout
 
 ```
-/var/lib/blindvault/       ← API state (managed by blindvault-api)
+/var/lib/nocovault/        ← API state (managed by nocovault-api)
 /var/lib/bv-blobstore/     ← ciphertext blobs (sha256-named files)
 /var/lib/bv-sites/         ← per-handle: staging/, published/, meta.json
 /var/lib/bv-board/         ← board.json + images/
 /var/lib/bv-shots/thumbs/  ← <handle>.jpg preview thumbnails
 /var/lib/bv-resume/        ← owners/ slugs/ shared/
-/var/www/blindvault/       ← static frontend (served by nginx)
+/var/www/nocovault/        ← static frontend (served by nginx)
 /var/lib/bv-download/      ← per-job tmp dirs (reaped after stream)
 ```
 
 ## Authentication Flow
 
 ```
-Client                nginx            blindvault-api        bv-sites / bv-resume
+Client                nginx            nocovault-api         bv-sites / bv-resume
   │                     │                    │                       │
   │── POST /api/login ──►                    │                       │
   │                     │──────────────────► │                       │
