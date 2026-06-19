@@ -1,4 +1,4 @@
-# Blindvault
+# 🖧 Nocohcr / nocovault
 
 A self-hosted PWA built for communities that need a secure digital home. It combines an end-to-end encrypted personal vault, encrypted email inbox, encrypted messaging, an anonymous community board, personal website hosting, a resume builder, a local resource directory, and a digital library into a single installable app.
 
