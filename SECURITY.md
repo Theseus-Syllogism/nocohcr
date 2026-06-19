@@ -2,7 +2,7 @@
 
 ## Overview
 
-Blindvault is designed so that the server operator cannot read users' vault contents. Client-side encryption means sensitive data is encrypted in the browser before transmission and decrypted after retrieval; the server stores and serves opaque ciphertext only.
+Nocohcrvault is designed so that the server operator cannot read users' vault contents. Client-side encryption means sensitive data is encrypted in the browser before transmission and decrypted after retrieval; the server stores and serves opaque ciphertext only.
 
 ## End-to-End Encryption (Vault Files)
 
@@ -51,7 +51,7 @@ bv-board adds in-process per-IP sliding-window rate limits per action (e.g. 10 p
 ## Service Isolation
 
 - Every service binds to `127.0.0.1` only; nginx is the sole public listener.
-- The blindvault-api systemd unit applies aggressive hardening: `NoNewPrivileges`, `PrivateTmp`, `ProtectSystem=strict`, `MemoryDenyWriteExecute`, capability bounding set dropped to empty, `@privileged`/`@resources`/`@mount` syscall filters blocked.
+- The Nocohcrvault-api systemd unit applies aggressive hardening: `NoNewPrivileges`, `PrivateTmp`, `ProtectSystem=strict`, `MemoryDenyWriteExecute`, capability bounding set dropped to empty, `@privileged`/`@resources`/`@mount` syscall filters blocked.
 - PostgreSQL accepts only TLS loopback connections with scram-sha-256 authentication.
 - bv-blobstore never logs the Bearer token.
 - bv-shots builds screenshot URLs server-side from validated handles, preventing SSRF.
