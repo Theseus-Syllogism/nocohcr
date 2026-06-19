@@ -1,61 +1,82 @@
 # Blindvault
 
-A self-hosted PWA built for communities that need a secure digital home. It combines an end-to-end encrypted personal vault, encrypted email inbox, anonymous community board, personal website hosting, resume builder, and a digital library into a single installable app.
+A self-hosted PWA built for communities that need a secure digital home. It combines an end-to-end encrypted personal vault, encrypted email inbox, encrypted messaging, an anonymous community board, personal website hosting, a resume builder, a local resource directory, and a digital library into a single installable app.
 
-The server operator cannot read your vault files or inbox. Encryption happens in the browser before anything leaves your device.
+The server operator cannot read your vault files, inbox, or messages. Encryption happens in the browser before anything leaves your device.
+
+> The screenshots below are from the reference deployment **Loveland Homeless Community Resources** (`nocohcr.com`), a Blindvault instance built for people in hard situations: survivors, advocates, case workers, and anyone who needs a quiet place for documents and conversations.
 
 ---
 
 ## Features
 
-### Dashboard
+### Dashboard: My Vault
 
-After logging in you land on the dashboard with quick access to everything.
+After signing in you land on My vault, encrypted on your device. A prominent "Tell someone you need help" card surfaces the PING feature, which opens your phone's text or call app with a message already typed for a trusted contact. Nothing routes through the server. Below it, the Documents section is where identity papers, immunization records, and court documents are stored, encrypted on the device first. The left rail is the app's full map: vault, files, library, website, explore, resume, notes, forms, and the messaging tools.
 
 ![Dashboard](screenshots/dashboard.png)
 
 ---
 
-### Encrypted Vault
+### Encrypted Files (Cloud Files)
 
-Files are encrypted in your browser using a key derived from your password. The server stores only ciphertext keyed by the sha256 hash of the encrypted bytes. Nothing is readable server-side.
+End-to-end encrypted file storage. Names, contents, and search terms are all sealed on the device before upload. The server only ever stores opaque ciphertext keyed by the sha256 hash of the encrypted bytes. You can upload files, select and zip them for download, and search by blind-indexed terms (match any or all terms). A storage meter shows usage against the per-account quota.
 
 ![Vault files](screenshots/vault-files.png)
 
 ---
 
+### Library: Books & Films
+
+Read the books in your vault, PDFs and ebooks, in one place. Mark a book available offline to keep it on the device and read it with no connection; everything is decrypted only on the device. Below your own shelf, Films & TV streams free public-domain and openly-licensed movies and shows from the Internet Archive, with no account and no ads, searchable and filterable by Feature films, Film noir, Silent, Classic TV, Educational, and Cartoons.
+
+![Library](screenshots/library.png)
+
+---
+
 ### Encrypted Inbox
 
-Incoming email is sealed to your X25519 public key at the server before storage. Only your device holds the private key needed to read it.
+A full mail client with Compose, Inbox, Starred, Sent, Drafts, Scheduled, Spam, and Trash. Incoming email is sealed to your X25519 public key at the server before storage, so only your device holds the private key needed to read it. The inbox supports inbound mail from external senders, internal casework, and scheduled outbound sends.
 
 ![Inbox](screenshots/inbox.png)
 
 ---
 
+### Encrypted Messages
+
+Direct one-to-one messaging, encrypted on the device, so the server cannot read the messages. Start a new conversation with another handle, or message yourself to get a private, encrypted space for notes.
+
+![Messages](screenshots/chat.png)
+
+---
+
 ### Community Board
 
-A local classifieds board that requires no account. Post resources, warnings, events, rides, free items, or anything else your community needs. When you create a post you get a one-time private key. Only someone with that key can edit, renew, or delete the post.
+A public Local Board for the community, a local bulletin where posts are visible to anyone and expire after 7 days. Categories cover Resource updates, Warnings, Help needed, Help offered, Events, Groups & Meetups, Volunteer, Free / Give away, Rides, Sublet / Couch, Lost & Found, and General. No account is required to read or post.
 
 ![Board](screenshots/board.png)
+
+Creating a post is a simple form: pick a category, add a title and details, and optionally attach event details (start/end time and venue). When you create a post you get a one-time private key, and only someone holding that key can edit, renew, or delete it.
+
 ![New post](screenshots/board-new.png)
 
 ---
 
 ### Explore
 
-Browse published community sites with live preview thumbnails generated on publish.
+Discover personal sites built by the community, each with a live preview thumbnail generated on publish. Sort by newest and open any handle's site at `<handle>.<yourdomain>` (e.g. `info.nocohcr.com`).
 
 ![Explore](screenshots/explore.png)
 
 ---
 
-### Personal Websites
+### Personal Websites: Builder
 
-Claim a handle and get a personal site at `<handle>.yourdomain.com`. The code editor lets you write HTML and CSS directly.
+Claim a handle and get a personal site at `<handle>.yourdomain.com`. The Builder is a WYSIWYG editor: add blocks (Heading, Text, Button, Image, List, Divider, Spacer, Section, Columns, Navigation, Tabs), arrange them by dragging the handle, and restyle the whole page with one-click theme presets (Clean Light, Aurora, Ink on Paper, Warm Rose, Deep Ocean, Midnight, Forest, Sunset, Slate Pro, High Contrast). Start from a template or a blank page.
 
-![Site editor](screenshots/site-editor.png)
+![Builder](screenshots/site-editor.png)
 
-The WYSIWYG studio lets you drag, drop, and arrange sections without writing code. JavaScript is stripped at publish and blocked by CSP, so published sites are static HTML/CSS only.
+A Code view is available for editing the underlying HTML/CSS directly. JavaScript is stripped at publish and blocked by CSP, so published sites are static HTML/CSS only.
 
 ![Studio](screenshots/studio.png)
 
@@ -63,23 +84,23 @@ The WYSIWYG studio lets you drag, drop, and arrange sections without writing cod
 
 ### Resume Builder
 
-Build a structured resume with a live preview. Publish it as a shareable link at `/r/your-name` or export it as a PDF.
+Build a structured resume with a live preview. Reorder sections (Education, Projects, Skills, Experience) by drag or arrow keys, fill in roles inline, switch layout (e.g. Sidebar) and font, then share it as a link at `/r/your-name` or export a PDF.
 
 ![Resume builder](screenshots/resume-builder.png)
 
 ---
 
-### Digital Resources
+### Digital Library: Offline Resources
 
-Access downloadable forms and local resource links.
+Free, durable, offline-capable resources built for low-bandwidth connections, low-end Android phones, and people on the move. Paste a link to a supported video or song and the server fetches it and hands the file back, with no account, no ads, and no tracking. Choose video (.mp4) or music/audio (.mp3) and a quality tier.
 
-![Digital resources](screenshots/digital-resources.png)
+![Digital library](screenshots/digital-resources.png)
 
 ---
 
 ### Resources Directory
 
-A curated list of local community resources and services.
+Local services in Larimer County, browsable with no account. Quick-pick tiles cover Emergency, Hotlines, Food banks, Know your rights, Directions, Safe routing, Download Books & Videos, the Community Board, and the Community Forum. Search across listings (e.g. *2-1-1 Colorado*) and, for each result, open the website, view it on a map, or save it to your vault.
 
 ![Resources](screenshots/resources.png)
 
@@ -87,23 +108,23 @@ A curated list of local community resources and services.
 
 ### Forms Library
 
-Download common legal, benefits, and government forms directly from the app.
+Pre-built documents you can hand to staff, the DMV, a clinic, or a court: Personal data sheet, Letter of authorization, Income & hardship statement, Colorado HIPAA Release, the DR 2153 stolen-ID affidavit, Colorado Birth Certificate Request, and more. Your vault profile fills in the parts you've already entered (name, address, contacts) so you're not writing them by hand each time, and everything is generated on the device. The server never sees the blanks.
 
 ![Forms](screenshots/forms.png)
 
 ---
 
-### Directions
+### Directions & Safe Routing
 
-Get walking, cycling, and driving directions using a locally hosted routing engine. No data sent to Google or any third party.
+Get walking, biking, or driving directions for the local area using a locally hosted routing engine, with no data sent to Google or any third party. Long-press the map to drop a destination or start pin. A banner links to the Flock camera safe-routing map, which can route around automated license-plate readers.
 
 ![Directions](screenshots/directions.png)
 
 ---
 
-### Emergency Info
+### Emergency Message
 
-Quick access to emergency contacts and safety information.
+Reach a registered vault holder without creating an account, for when you need to get a message or document to someone fast and signing up isn't an option. The message and any attachment are encrypted in the browser before they leave. To avoid leaking who exists, you see the same confirmation whether or not the recipient handle is real, and there's no read receipt.
 
 ![Emergency](screenshots/emergency.png)
 
@@ -111,7 +132,7 @@ Quick access to emergency contacts and safety information.
 
 ### Know Your Rights
 
-A reference for legal rights and resources.
+Short, printable cards covering common encounters: police stops, ICE and immigration agents, landlords and housing, workplace and wages, hospitals and medical care, and child-welfare (CPS) visits. Carry them in a wallet, save them to the vault, or memorize the scripts. Available in English and Spanish. (General guidance, not legal advice.)
 
 ![Rights](screenshots/rights.png)
 
@@ -119,13 +140,15 @@ A reference for legal rights and resources.
 
 ### Settings
 
-Manage your account, handle, and preferences.
+Manage appearance (Auto / Light / Dark / High contrast), language (English / Español), accessibility (Easy read, with larger text and spacing), your session, and an optional sign-in password that unlocks the vault without typing the 12-word recovery phrase.
 
 ![Settings](screenshots/settings.png)
 
 ---
 
 ### About
+
+The About page explains the model in plain language: end-to-end encryption, a private vault, a resource map that routes on the operator's own servers (no Google, no tracking), encrypted messages, an optional Community Chat AI that runs on-server and is never used to train outside models, and full offline operation once installed as a web app.
 
 ![About](screenshots/about.png)
 
@@ -135,17 +158,29 @@ Manage your account, handle, and preferences.
 
 Blindvault installs as a PWA on any phone. The layout is designed for low-end devices on mobile data.
 
-| Dashboard | Inbox | Board |
+| Dashboard | Inbox | Messages |
 |---|---|---|
-| ![Mobile dashboard](screenshots/mobile-dashboard.png) | ![Mobile inbox](screenshots/mobile-inbox.png) | ![Mobile board](screenshots/mobile-board.png) |
+| ![Mobile dashboard](screenshots/mobile-dashboard.png) | ![Mobile inbox](screenshots/mobile-inbox.png) | ![Mobile messages](screenshots/mobile-chat.png) |
 
-| Explore | Studio | Resume |
+| Board | New post | Explore |
 |---|---|---|
-| ![Mobile explore](screenshots/mobile-explore.png) | ![Mobile studio](screenshots/mobile-studio.png) | ![Mobile resume](screenshots/mobile-resume-builder.png) |
+| ![Mobile board](screenshots/mobile-board.png) | ![Mobile new post](screenshots/mobile-board-new.png) | ![Mobile explore](screenshots/mobile-explore.png) |
 
-| Resources | Directions | Emergency |
+| Files | Library | Builder |
 |---|---|---|
-| ![Mobile resources](screenshots/mobile-resources.png) | ![Mobile directions](screenshots/mobile-directions.png) | ![Mobile emergency](screenshots/mobile-emergency.png) |
+| ![Mobile files](screenshots/mobile-vault-files.png) | ![Mobile library](screenshots/mobile-library.png) | ![Mobile builder](screenshots/mobile-site-editor.png) |
+
+| Resume | Digital library | Resources |
+|---|---|---|
+| ![Mobile resume](screenshots/mobile-resume-builder.png) | ![Mobile digital library](screenshots/mobile-digital-resources.png) | ![Mobile resources](screenshots/mobile-resources.png) |
+
+| Forms | Directions | Emergency |
+|---|---|---|
+| ![Mobile forms](screenshots/mobile-forms.png) | ![Mobile directions](screenshots/mobile-directions.png) | ![Mobile emergency](screenshots/mobile-emergency.png) |
+
+| Know your rights | Settings | About |
+|---|---|---|
+| ![Mobile rights](screenshots/mobile-rights.png) | ![Mobile settings](screenshots/mobile-settings.png) | ![Mobile about](screenshots/mobile-about.png) |
 
 ---
 
@@ -202,10 +237,10 @@ Quick steps:
 
 Optional services that degrade gracefully if absent:
 
-- `bv-shots` (Playwright/Chromium) -- site thumbnails and PDF export
-- `bv-route-proxy` (Valhalla + Nominatim) -- directions
-- `bv-download-proxy` (yt-dlp) -- video and audio download
-- `bv-book-proxy` (Kavita) -- book management
+- `bv-shots` (Playwright/Chromium): site thumbnails and PDF export
+- `bv-route-proxy` (Valhalla + Nominatim): directions
+- `bv-download-proxy` (yt-dlp): video and audio download
+- `bv-book-proxy` (Kavita): book management
 
 ---
 
