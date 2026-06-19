@@ -4,7 +4,7 @@ A self-hosted PWA built for communities that need a secure digital home. It comb
 
 The server operator cannot read your vault files, inbox, or messages. Encryption happens in the browser before anything leaves your device.
 
-> The screenshots below are from the reference deployment **Loveland Homeless Community Resources** (`nocohcr.com`), a Blindvault instance built for people in hard situations: survivors, advocates, case workers, and anyone who needs a quiet place for documents and conversations.
+> The screenshots below are from the reference deployment **Loveland Homeless Community Resources** (`nocohcr.com`), a nocovault instance built for people in hard situations: survivors, advocates, case workers, and anyone who needs a quiet place for documents and conversations.
 
 ---
 
@@ -76,7 +76,7 @@ Claim a handle and get a personal site at `<handle>.yourdomain.com`. The Builder
 
 ![Builder](screenshots/site-editor.png)
 
-A Code view is available for editing the underlying HTML/CSS directly. JavaScript is stripped at publish and blocked by CSP, so published sites are static HTML/CSS only.
+🖥 Code view is available for editing the underlying HTML/CSS directly. JavaScript is stripped at publish and blocked by CSP, so published sites are static HTML/CSS only.
 
 ![Studio](screenshots/studio.png)
 
@@ -156,7 +156,7 @@ The About page explains the model in plain language: end-to-end encryption, a pr
 
 ### Mobile
 
-Blindvault installs as a PWA on any phone. The layout is designed for low-end devices on mobile data.
+nocovault installs as a PWA on any phone. The layout is designed for low-end devices on mobile data.
 
 | Dashboard | Inbox | Messages |
 |---|---|---|
@@ -192,8 +192,8 @@ Browser / Mobile PWA
         v
      nginx (edge)
         |
-        +-- /var/www/blindvault/      Static frontend (SPA)
-        +-- /api/*         ->  blindvault-api    :8088  (Rust/Axum + PostgreSQL)
+        +-- /var/www/nocovault/      Static frontend (SPA)
+        +-- /api/*         ->  nocovault-api    :8088  (Rust/Axum + PostgreSQL)
         +-- /api/sites/*   ->  bv-sites          :8800  (Node.js)
         +-- /api/board/*   ->  bv-board          :8802  (Node.js)
         +-- /api/resume/*  ->  bv-resume         :8805  (Node.js)
@@ -230,7 +230,7 @@ Quick steps:
 
 1. Install nginx (with `headers-more`), Node.js 20+, Python 3.11+, PostgreSQL 16
 2. Run `deploy/postgres/init.sql` to create the database role
-3. Copy the `blindvault-api` binary and install the systemd unit from `deploy/systemd/`
+3. Copy the `nocovault-api` binary and install the systemd unit from `deploy/systemd/`
 4. Start each Node.js service (`bv-sites`, `bv-board`, `bv-blobstore`, `bv-resume`, `bv-schedule`, `bv-messaging`)
 5. Copy nginx configs from `deploy/nginx/` and update your domain name
 6. Deploy the frontend to your web root and run `node bv-build.mjs`
@@ -286,7 +286,7 @@ services/
 deploy/
 +-- nginx/                    nginx vhost configs
 +-- postgres/                 Database init SQL and pg_hba snippet
-+-- systemd/                  systemd unit for blindvault-api
++-- systemd/                  systemd unit for nocovault-api
 ```
 
 ---
